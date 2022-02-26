@@ -70,14 +70,15 @@ const fs = require('fs');
 // fs.writeFileSync('DateTime/date-time.txt',date);
 
 http.createServer((req,res)=>{
-    let date = new Date().toString();
+    let date = new Date();
+    console.log(date.toISOString())
     res.writeHeader(200,{"Content-Type":'text/html'})
-    fs.writeFile('DateTime/date-time.txt',date,(err)=>{
+    fs.writeFile(`DateTime/${date.toDateString()}.txt`,date.toString(),(err)=>{
         if(err)
             console.log(err)
         else
         {
-            fs.readFile('DateTime/date-time.txt',(err,d)=>{
+            fs.readFile(`DateTime/${date.toDateString()}.txt`,(err,d)=>{
                 //console.log(d)
                 res.write(d)
                 res.end()
