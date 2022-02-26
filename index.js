@@ -52,16 +52,39 @@ const fs = require('fs');
 //     console.log(error)
 // }
 
+// http.createServer((req,res)=>{
+//     res.writeHeader(200,{"Content-Type":'text/html'})
+//     fs.writeFile('sample1.txt',data,(err)=>{
+//         if(err)
+//             console.log(err)
+//     })
+//     fs.readFile('sample1.txt',(err,d)=>{
+//         res.write(d)
+//         res.end()
+//     })
+// }).listen(PORT,()=>{
+//     console.log('Server is up in ', PORT)
+// })
+
+// let date = new Date().toString();
+// fs.writeFileSync('DateTime/date-time.txt',date);
+
 http.createServer((req,res)=>{
+    let date = new Date().toString();
     res.writeHeader(200,{"Content-Type":'text/html'})
-    fs.writeFile('sample1.txt',data,(err)=>{
+    fs.writeFile('DateTime/date-time.txt',date,(err)=>{
         if(err)
             console.log(err)
+        else
+        {
+            fs.readFile('DateTime/date-time.txt',(err,d)=>{
+                //console.log(d)
+                res.write(d)
+                res.end()
+            })
+        }
     })
-    fs.readFile('sample1.txt',(err,d)=>{
-        res.write(d)
-        res.end()
-    })
+    
 }).listen(PORT,()=>{
     console.log('Server is up in ', PORT)
 })
