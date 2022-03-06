@@ -7,6 +7,7 @@ const {UserDetails} = require('../Schema');
 mongoose.connect(dbUrl);
 
 router.get('/',async(req,res)=>{
+  
   try{
     const details = await UserDetails.find()
     res.send({
