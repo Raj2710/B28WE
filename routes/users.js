@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 const {dbUrl,mongodb,MongoClient} = require('../dbConfig')
-const {hashing,hashCompare,role,sample} = require('../auth')
+const {hashing,hashCompare,role,sample,createJWT,authVerify} = require('../auth')
 
 router.post('/register',async(req,res)=>{
   const client = await MongoClient.connect(dbUrl);
@@ -43,7 +43,7 @@ router.post('/register',async(req,res)=>{
 })
 
 
-router.post('/login',role,sample,async(req,res)=>{
+router.post('/login',async(req,res)=>{
   const client = await MongoClient.connect(dbUrl);
   try{
     let db = await client.db('b28we');
@@ -63,14 +63,17 @@ router.post('/login',role,sample,async(req,res)=>{
       console.log(compare)
       if(compare==true)
       {
+        //jwt token
+        const token = await createJWT({email:req.body.email})
         res.send({
           statusCode:200,
+          token,
           message:'Login Successfull'
         })
       }
       else{
         res.send({
-          statusCode:200,
+          statusCode:401,
           message:'Invalid Password'
         })
       }
@@ -90,4 +93,22 @@ router.post('/login',role,sample,async(req,res)=>{
 
 })
 
+
+router.get('/verify-token/:token',async(req,res)=>{
+    const validity = await authVerify(req.params.token)
+    if(validity)
+    {
+      res.send({
+        statusCode:200,
+        message:"Valid Session"
+      })
+    }
+    else
+    {
+      res.send({
+        statusCode:401,
+        message:"Session Timedout"
+      })
+    }
+})
 module.exports = router;
